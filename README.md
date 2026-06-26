@@ -1,171 +1,92 @@
-# ---> Python
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# toxic-guru-bot
 
-# C extensions
-*.so
+🤖 **Himalayan Guru Telegram Bot (The Cynical Shrink)**  
+An asynchronous Telegram bot powered by the advanced **Llama 3.3 70B** LLM. It acts as a cynical digital mystic, an esoteric guru, and a rogue therapist with a black belt in sarcasm. The bot maintains a rock-solid roleplay persona, addresses users directly, and ironically tears down mental illusions, laziness, and procrastination.
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+---
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+## ✨ Architecture & Key Features
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+* **Advanced AI Engine:** Seamless integration with the `llama-3.3-70b-versatile` model via Groq's high-speed API.
+* **Persistent Context (Memory):** Local conversation history tracking (up to 20 messages per user) powered by SQLite, featuring automated context pruning to optimize token usage.
+* **Thread-Safe DB Ops:** Heavy SQLite read/write operations are offloaded to isolated background threads via `asyncio.to_thread`, keeping the core async event loop entirely non-blocking.
+* **Environment Isolation:** Zero hardcoded secrets. All sensitive keys and tokens are strictly decoupled into environment variables via a `.env` file.
+* **Production-Ready:** Includes a ready-to-use service configuration file for daemonization, process control, and persistent autostart via `systemd` on Linux servers.
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+---
 
-# Translations
-*.mo
-*.pot
+## 🛠 Tech Stack
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+* **Language:** Python 3.10+
+* **Framework:** `aiogram 3.x` (Asynchronous Telegram Bot API wrapper)
+* **AI Client:** `openai` (Async client, Groq API compatible)
+* **Database:** `sqlite3`
+* **Target Environment:** Linux Ubuntu, `systemd`, Python `venv`
 
-# Flask stuff:
-instance/
-.webassets-cache
+---
 
-# Scrapy stuff:
-.scrapy
+## 🚀 Quick Start & Deployment
 
-# Sphinx documentation
-docs/_build/
+### 1. Server Environment Setup (Linux)
+```bash
+mkdir toxic_bot && cd toxic_bot
+python3 -m venv venv
+source venv/bin/activate
+pip install aiogram openai
 
-# PyBuilder
-.pybuilder/
-target/
+```
 
-# Jupyter Notebook
-.ipynb_checkpoints
+### 2. Configuration
 
-# IPython
-profile_default/
-ipython_config.py
+Create a `.env` file in the project root directory on your server and add your API tokens (this file is securely excluded from version control via `.gitignore`):
 
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
+```env
+TG_TOKEN=your_telegram_bot_token_from_botfather
+GROQ_API_KEY=your_groq_api_key
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
+```
 
-# UV
-#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#uv.lock
+### 3. Autostart Daemon Setup (systemd)
 
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#poetry.lock
+Create a system service configuration file at `/etc/systemd/system/toxic_bot.service`:
 
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#pdm.lock
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#   in version control.
-#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
-.pdm.toml
-.pdm-python
-.pdm-build/
+```ini
+[Unit]
+Description=Toxic Guru Telegram Bot
+After=network.target
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/toxic_bot
+EnvironmentFile=/root/toxic_bot/.env
+ExecStart=/root/toxic_bot/venv/bin/python3 bot.py
+Restart=always
+RestartSec=5
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
+[Install]
+WantedBy=multi-user.target
 
-# SageMath parsed files
-*.sage.py
+```
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+Initialize, enable, and spin up the service on your server:
 
-# Spyder project settings
-.spyderproject
-.spyproject
+```bash
+systemctl daemon-reload
+systemctl enable toxic_bot
+systemctl start toxic_bot
 
-# Rope project settings
-.ropeproject
+```
 
-# mkdocs documentation
-/site
+---
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+## 📊 Service Management
 
-# Pyre type checker
-.pyre/
+* **Check status and runtime logs:**
+`systemctl status toxic_bot`
+* **Restart the bot after making code edits:**
+`systemctl restart toxic_bot`
+* **Monitor incoming AI logs and stream output in real-time:**
+`journalctl -u toxic_bot -f`
 
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
-
-*.db
+```
